@@ -21,6 +21,7 @@ from ghapi.all import GhApi
 from git import Repo
 from simple_parsing.helpers.serialization.serializable import FrozenSerializable
 from swebench.harness.constants import MAP_REPO_VERSION_TO_SPECS
+from swebench.harness.test_spec import replace_uninstallable_packages_requirements_txt
 from swebench.harness.utils import get_environment_yml, get_requirements
 
 import docker
@@ -1224,7 +1225,7 @@ class SWEEnv(gym.Env):
                 )
                 self.logger.debug("Created conda environment")
                 # Write reqs to requirements.txt in docker container
-                content_reqs = get_requirements(self.record)
+                content_reqs = replace_uninstallable_packages_requirements_txt(get_requirements(self.record))
                 copy_file_to_container(self.container_obj, content_reqs, PATH_TO_REQS)
                 # Create conda environment + install reqs
                 self.communicate_with_handling(
